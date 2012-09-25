@@ -21,5 +21,5 @@ var _jsArr = [
 "ui/datagrid.js",
 "ui/select.js"];
 for( var i = 0, len = _jsArr.length; i < len; i++ ) {
-    document.write("<script src=../../src/" + _jsArr[i] + " ><\/scr" + "ipt>");
+    document.write("<script src=" + _jsArr[i] + " ><\/scr" + "ipt>");
 }
