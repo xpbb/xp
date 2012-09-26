@@ -93,9 +93,9 @@
 		 * @param {Array} arr
 		 */
 		unique : function(arr) {
-			var ret = [arr[0]], i = 1, len = arr.length;
+			var ret = [], i = 0, len = arr.length;
 			for (; i < len; i++) {
-				if (arr[i] !== ret[ret.length - 1]) {
+				if (ret.indexOf(arr[i]) == -1) {
 					ret.push(arr[i]);
 				}
 			}
@@ -344,7 +344,7 @@
 			}
 			str += "</p>";
 			if (window.console) {
-				console.log(obj);
+				//console.log(obj);
 			}
 			var div = dom.node("div", {}, dom.getBody());
 			div.innerHTML = str;

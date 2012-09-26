@@ -1,0 +1,112 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<title>测试class</title>
+<script type="text/javascript" language="javascript" src="../../include.js"></script>
+<script>
+
+var test = {
+	options : {
+		test1 : function(){alert("test1");}
+	},
+	hello : function(){
+		alert("hello javascript");
+		alert("hello world");
+	}
+};
+xp.cls("xp.test1",{
+	options : {
+		test1 : function(){alert("test1");},
+		num1 : 1,
+		str1 : "str1",
+		my : "test"
+	},
+	hello1 : function(){
+		alert("hello world1");
+	},
+	hello0 : function(){
+		alert("hello world0");
+	},
+	hello22 : function(test){
+			alert("hello world12");
+	}
+});
+xp.cls("xp.test2",{
+	hello2 : function(){
+		alert("hello world2");
+	}
+});
+xp.cls("xp.test3",{
+	hello3 : function(){
+		alert("hello world3");
+	}
+});
+var test2 = {
+	test22 : {}
+}
+xp.cls("xp.face",{
+	testt : {},
+	test : xp.noop,
+	hello1 : xp.noop,
+	hello2 : function(){},
+	str1 : "",
+	num1 : 0
+});
+xp("xp.ui.slect",{
+	alias : "select",
+	require : "xp.test2,xp.test3,xp.ui.tabs,xp.ui.datagrid",
+	extend : "xp.test1",
+	interFace : "xp.face",
+	overide : {
+		hello22 : function(test){
+			alert("hello world222");
+		}
+		/*,
+		hello1 : function(){
+			alert("hello world111");
+		}
+		*/
+	},
+	options : {
+		test1 : function(){alert("select");},
+		num1 : 2,
+		str1 : "str2"
+	},
+	testt : {"mt":"myt"},
+	test : function(){
+		console.log(this);
+	},
+	hello0 : function(){
+		alert("hello world00");
+	},
+	str1 : "test",
+	num1 : 5
+});
+
+var s = xp.run("xp.ui.slect",{
+	test1 : function(){alert("test222333");}
+});
+
+console.log(s);
+/*
+console.log(s.options);
+console.log(s.hello0);
+console.log(s.hello1);
+console.log(s.hello2);
+console.log(s.hello3);
+*/
+//console.log(xp.constant.get("xp.constantx"));
+//console.log(xp.constant.get("xp.dom"));
+/*
+xp.define("xp.ui.datagrid",["xp.dom,xp.ajax,xp.test1,xp.test2,xp.ui.select,xp.ui"],function(){
+	return {};
+});
+*/
+xp.run("xp.ui.tabs");
+</script>
+	</head>
+	<body>
+		
+	</body>
+</html>

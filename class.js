@@ -54,6 +54,22 @@
 			return sub;
 		},
 		/**
+		 * 错误类记录 
+		 */
+		_errStack : {},
+		/**
+		 * 错误链接记录 
+		 */
+		_errUrl : {},
+		/**
+		 * 实例类执行堆栈
+		 */
+		_clsStack : {},
+		/**
+		 * 所有执行堆栈 
+		 */
+		_runStack : {},
+		/**
 		 * 静态类继承方法，适合于类库内对象模式继承
 		 * @param name {String} 类名
 		 * @param code {Object} 类对象
@@ -63,12 +79,16 @@
 				code = code || {},
 				constant = xp.constant,
 				error = xp.error,
-				errorUrl = [],
+				//errorUrl = [],
+				//单个类的错误计数器
+				errorNum = 0,
 				get = function(name){
 					return constant.get(name);
 				},
 				pushErr = function(url){
-					errorUrl.push( xp.load._parseName(url) );
+					errorNum++;
+					//所有错误地址都放到堆栈
+					xp._errUrl[xp.load._parseName(url)] = url;
 				};
 			code.options = code.options || {};
 			code.global = code.global || {};
@@ -85,6 +105,7 @@
 					error.set("在" + name + "类中" + code.extend + "需要加载或者加载失败！");
 					pushErr(code.extend);
 				}
+				//delete code.extend;
 			}
 
 			//包含
@@ -101,9 +122,8 @@
 					}
 
 				}
+				//delete code.require;
 			}
-			delete code.extend;
-			delete code.require;
 			xp.extend(true, clz, code);
 			
 			//接口
@@ -130,34 +150,90 @@
 				}
 				delete clz.interFace;
 			}
-			if(errorUrl.length > 0){	
-				xp.error.set("类" + name + "注册失败，尝试加载注册！");	
-				this._errStack[name] = code.alias || null;
-				//加载注册并执行	
-				var me = this;	
-				xp.require(errorUrl,function(){
-					if(xp.cls(name, code)){
-						//如果存在需要执行的
-						var runs = me._runStack[name];
-						if( runs && runs.length > 0 ) {
-							delete me._errStack[name];
-							for( var i = 0, len = runs.length; i < len; i++ ) {
-								xp.run(name,runs[i]);
-							}
-						}
-						xp.error.setRegCls(errorUrl,name);
-						xp.error.log();
-						return true;
-					}
-				});
-				return;
+			if(errorNum > 0){	
+				xp.error.set("类" + name + "注册失败，尝试加载注册！");			
+				//定义错误堆栈
+				this._errStack[name] = code;
 			}
-			//console.log(clz);
-			constant.set(name, clz, code.alias);
+			!this._errStack[name] && constant.set(name, clz, code.alias);
 			return true;
 		},
 		/**
-		 *
+		 * 注册加载失败的类并运行错误的实例
+		 */
+		_regCls : function(){
+			var me = this, urls = xp.keys(me._errUrl), stacks = me._errStack;
+			//console.log(urls);
+			//一次性加载所有的未注册url
+			xp.require(urls,function(){
+				//注册所有类
+				for(var p in stacks){
+					//删除掉错误锁
+					delete me._errStack[p];
+					xp.cls( p, stacks[p] );
+				}			
+				//实例化所有类
+				var runs = xp._runStack;
+				console.log(runs);	
+				if( runs && xp.getLen(runs) > 0 ) {
+					//批量执行
+					for(var r in runs) {
+						var rn = runs[r];
+						if(xp.isArray(rn) && rn.length > 0) {
+							for( var i = 0, len = rn.length; i < len; i++ ) {
+								xp.run(r,rn[i]);
+							}
+						}
+					}
+					
+				}
+				//打印结果
+				if( xp.config.debug > 0 ){
+					xp.log(urls,"二次注册加载的js有:");
+				}
+			});
+		},
+		/**
+		 * 类执行处理
+		 * @param {Object} name
+		 * @param {Object} settings
+		 */
+		run : function(name, settings) {
+			// 收集所有的错误执行
+			!this._runStack[name] && (this._runStack[name] = []);
+			
+			//错误的则不执行
+			if( this._errStack[name] || (this._errStack[name] && this._errStack[name].alias === name) ){
+				this._runStack[name].push(settings);
+				return null;
+			}
+			// 确保只创建一次类实例
+			if (!this._clsStack[name]) {
+				var claz = xp.constant.get(name);
+				if (!claz) {
+					xp.error.set("请检查类" + name + "是否存在！系统会尝试二次加载。");
+					//统一放到错误处理去加载
+					this._runStack[name].push(settings);
+					var _url = xp.load._parseName(name);
+					this._errUrl[_url] = name;
+					return null;
+				}
+				
+				var instance = xp.clone(claz);
+				this._clsStack[name] = instance;
+			} else {
+				var instance = this._clsStack[name];
+			}
+			var instance = instance || {},
+			// 读入用户配置
+			options = xp.extend(instance.options || {}, settings) || {},
+			global = instance.global || {};
+			// 执行实例初始化
+			instance.init && instance.init(options, global);
+			return instance;
+		},
+		/**
+		 * 简化定义类 遵循amd模式
 		 * @param {String} name 类名
 		 * @param {Array} file 需要的文件名,依次为包含、继承、接口、重写
 		 * @param {Object} func 函数
@@ -195,56 +271,6 @@
 				this.cls(name, func);
 			}
 			return null;
-		},
-		/**
-		 * 错误类记录 
-		 */
-		_errStack : {},
-		/**
-		 * 实例类执行堆栈
-		 */
-		_clsStack : {},
-		/**
-		 * 所有执行堆栈 
-		 */
-		_runStack : {},
-		/**
-		 *
-		 * @param {Object} name
-		 * @param {Object} settings
-		 */
-		run : function(name, settings) {
-			// 收集所有的执行
-			!this._runStack[name] && (this._runStack[name] = []);
-			this._runStack[name].push(settings);
-			//错误的则不执行
-			if( this._errStack[name] || xp.hasVal(this.errStack,name) ){
-				return null;
-			}
-			// 确保只创建一次类实例
-			if (!this._clsStack[name]) {
-				var claz = xp.constant.get(name);
-				if (!claz) {
-					xp.error.set("请检查类" + name + "是否存在！");
-					//此处设置外部加载文件
-					xp.require(xp.load._parseName(name),function(){
-						xp.run(name, settings);
-					});
-					return;
-				}
-				
-				var instance = xp.clone(claz);
-				this._clsStack[name] = instance;
-			} else {
-				var instance = this._clsStack[name];
-			}
-			var instance = instance || {},
-			// 读入用户配置
-			options = xp.extend(instance.options || {}, settings) || {},
-			global = instance.global || {};
-			// 执行实例初始化
-			instance.init && instance.init(options, global);
-			return instance;
 		}
 	});
 })(window)

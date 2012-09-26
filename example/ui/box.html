@@ -1,0 +1,47 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<title>测试class</title>
+<meta name="Keywords" content="标题" /> 
+<meta name="Description" content="标题" />
+<link href="../../themes/default/css/ui-main.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" language="javascript" src="../../src/include.js"></script>
+
+</head>
+<body>
+	<script>
+$(function(){
+	xp.run("xp.ui.box",{
+		container : "example"
+	});
+});
+
+</script>
+<div id="example"></div>	
+
+<div class="ui-form ui-form-wrap ui-input" style="width: 100px; left: 0px; top: 0px; ">
+	<input type="text" autocomplete="off" class="ui-form-field ui-form-input" style="width:98px;">
+</div>
+
+<!--不需要这块，只为了美化排版布局 -->
+<div class="clear"></div>
+<div class="ui-form ui-form-wrap ui-input" style="width: 100px; left: 0px; top: 0px; ">
+	<input type="password" autocomplete="off" class="ui-form-field ui-form-input" style="width:98px;">
+</div>
+
+<!--不需要这块，只为了美化排版布局 -->
+<div class="clear"></div>
+<div class="ui-form ui-form-wrap ui-input" style="width: 100px; left: 0px; top: 0px; ">
+	<input type="text" autocomplete="off" class="ui-form-field ui-form-input ui-form-text-default" value="123" style="width:98px;">
+</div>
+
+
+<!--不需要这块，只为了美化排版布局 -->
+<div class="clear"></div>
+<div class="ui-form ui-form-wrap ui-input ui-form-disabled" style="width: 100px; left: 0px; top: 0px; ">
+	<input type="text" readonly="readonly" disabled="disabled" autocomplete="off" class="ui-form-field ui-form-input" value="123" style="width:98px;">
+</div>
+
+</body>
+</html>

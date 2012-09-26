@@ -21,7 +21,7 @@ xp.error = {
 		if( xp.config.debug > 0 ){
 			this.errorList.length > 0 && xp.log(this.errorList,"请检查以下错误信息");
 			this.jsMapper.length > 0 && xp.log(this.jsMapper,"请检查以下文件加载情况");
-			this.jsCls.length > 0 && xp.log(this.jsCls,"二次注册加载情况");
+			//this.jsCls.length > 0 && xp.log(this.jsCls,"二次注册加载情况");
 		}
 		
 	},
@@ -36,11 +36,6 @@ xp.error = {
 		var n = xp.load._parseName(namer);
 		//把js压入堆栈
 		this.jsMapper.push(n);
-	},
-	jsCls : [],
-	setRegCls : function(urls,name) {
-		this.jsCls.push(name + "成功，加载的js有:" + urls.join(","));
-		//this.jsMapper.concat(urls);
 	}
 }
 

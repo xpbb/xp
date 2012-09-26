@@ -101,6 +101,7 @@ xp.ready = (function(document) {
 	return domReady;
 })(window.document);
 
-xp.ready(function(){	
+xp.ready(function(){
+	xp._regCls();	
 	xp.error.log();
 });

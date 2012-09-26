@@ -67,6 +67,9 @@ xp.require = function(){
 	//加载script脚本
 	function loadJS(src,callBack,charset){
 		var url = src.replace(/^\.\//,path);
+		if(url.indexOf("/.js") > -1){
+			return;
+		}
 		if(jsLoaded[url]){
 			setTimeout(function(){
 				callBack && callBack();
