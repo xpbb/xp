@@ -64,7 +64,7 @@ var Style = {
 		
 	// 获取当前帧的窗口(window)元素
 	getWindow : function( elem ){
-		return E.isWindow( elem ) ?
+		return xp.isWindow( elem ) ?
 			elem :
 			elem.nodeType === 9 ?
 				elem.defaultView || elem.parentWindow :
@@ -335,7 +335,7 @@ cssHooks.zIndex = {
 
 });
 
-xp.mix( xp.prototype, {
+xp.extend({
 	
 	css : function( name, val ){		
 		if( xp.isPlainObject(name) ){
@@ -447,7 +447,7 @@ xp.mix( xp.prototype, {
 // scrollTop和scrollLeft的原型方法拼装
 [ 'Left', 'Top' ].forEach(function( name ){	
 	var method = 'scroll' + name;
-	xp.prototype[ method ] = function( val ){
+	xp.fn[ method ] = function( val ){
 		var elem, win;
 		// get scrollTop/scrollLeft
 		if( val === undefined ){

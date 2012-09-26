@@ -2,11 +2,10 @@
 	/*
 	 * 基本函数判断
 	 * @time  2012/08/27 完成骨架
+	 * @time 2012/09/26 更改hasown和tostr方式
 	 */
 	var ua = window.navigator.userAgent.toLowerCase(), 
 		doc = window.document,
-		_toString = Object.prototype.toString, 
-		_hasOwn = Object.prototype._hasOwnProperty,
 		class2type = {};
 	
 	xp.extend({
@@ -64,7 +63,7 @@
 		 * @return {Boolean}
 		 */
 		isNumber : function(obj) {
-			return _toString.call(obj) === '[object Number]' && isFinite(obj);
+			return xp.toStr(obj) === '[object Number]' && isFinite(obj);
 		},
 		/**
          * 是否为数字类型
@@ -81,7 +80,7 @@
 		 */
 		isArray : [].isArray ||
 		function(obj) {
-			return _toString.call(obj) === '[object Array]';
+			return xp.toStr(obj) === '[object Array]';
 		},
 		/**
 		 * 是否为window
@@ -97,7 +96,7 @@
 		 * @return {Boolean}
 		 */
 		isObject : function(obj) {
-			return obj == null ? String(obj) == 'object' : _toString.call(obj) === '[object Object]' || true;
+			return obj == null ? String(obj) == 'object' : xp.toStr(obj) === '[object Object]' || true;
 		},
 		/**
 		 * 是否是日期
@@ -138,7 +137,7 @@
 		 * @return {Boolean}
 		 */
 		isNodeList : function(obj) {
-			return !!(obj && (obj._toString() == '[object NodeList]' || obj._toString() == '[object HTMLCollection]' || 
+			return !!(obj && (obj.toString() == '[object NodeList]' || obj.toString() == '[object HTMLCollection]' || 
 			(obj.length && this.isNode(obj[0]))));
 		},
 		/**
@@ -160,7 +159,7 @@
 				return false;
 			}
 			try {
-				if (obj.constructor && !_hasOwn.call(obj, "constructor") && !_hasOwn.call(obj.constructor.prototype, "isPrototypeOf")) {
+				if (obj.constructor && !xp.has(obj, "constructor") && !xp.has(obj.constructor.prototype, "isPrototypeOf")) {
 					return false;
 				}
 			} catch (e) {
@@ -169,7 +168,7 @@
 			var key;
 			for (key in obj) {
 			}
-			return key === undefined || _hasOwn.call(obj, key);
+			return key === undefined || xp.has(obj, key);
 		},
 		/**
 		 * 是否为空对象
@@ -188,7 +187,7 @@
 		 * @return {String}
 		 */
 		type : function(obj) {
-			return obj == null ? String(obj) : class2type[ _toString.call(obj)] || "object";
+			return obj == null ? String(obj) : class2type[ xp.toStr(obj) ] || "object";
 		},
 		/**
 		 * 判断浏览器是否为IE，如果是将返回版本号，不是则返回undefined

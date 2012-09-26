@@ -3,6 +3,7 @@
 	 * xp核心
 	 * @time  2012/08/02 完成骨架
 	 * @time  2012/09/25 增加config
+	 * @time  2012/09/26 增强init方法
 	 */
 	var _$ = window.$;
 	//核心的基础源于jquery
@@ -13,27 +14,34 @@
 	xp.fn = xp.prototype = {
 		constructor : xp,
 		//版本号
-		xp : "0.3",
+		xp : "0.5",
 		init : function(selector, context, func) {
 			if (!selector) {
 				return this;
 			}
-			if (selector.nodeType) {
-				this.context = this[0] = selector;
-				this.length = 1;
-				return this;
-			}
-
-			if (xp.isString(selector)) {
-				if(selector.substring(0, 1) === "#"){
+			if (typeof selector === "string") {
+				if (selector.substring(0, 1) === "#") {
 					return document.getElementById(selector.substring(1));
-				}else{
+				}
+				if (!context || context.nodeType) {
 					return xp.query(selector, context);
 				}
-				
+				if (~selector.indexOf(".js")) {
+					xp.require(selector, context, func);
+				}
+				if (~selector.indexOf("xp.")) {
+					xp.define(selector, context, func);
+				}
+			}
+			if(typeof selector === "array"){
+				xp.require(selector, context, func);
+			}
+			if (selector.nodeType) {
+				this.context = this[0] = selector;
+				return this;
 			}
 			//动态加载
-			else if (xp.isFunction(selector)) {
+			if (typeof selector === "function") {
 				xp.ready(selector);
 				return this;
 			}
@@ -61,8 +69,7 @@
 		}
 		// 如果只传入一个参数，则认为是对xp扩展
 		if (length === i) {
-			target = this;
-			--i;
+			target = this; --i;
 		}
 		for (; i < length; i++) {
 			// 只处理非空参数
@@ -85,7 +92,7 @@
 							clone = src && xp.isPlainObject(src) ? src : {};
 						}
 						// 递归调用copy
-						target[name] = xp.copy(deep, clone, copy);
+						target[name] = xp.extend(deep, clone, copy);
 					} else if (copy !== undefined) {
 						// 不能拷贝空值
 						target[name] = copy;
@@ -136,22 +143,28 @@
 		return obj;
 	};
 	//from mass
-    (function(scripts, cur){
-        cur = scripts[ scripts.length - 1 ];
-        var url = cur.hasAttribute ?  cur.src : cur.getAttribute( 'src', 4 );
-        url = url.replace(/[?#].*/, '');
-        xp.config = {
-        	debug : cur.getAttribute("debug") || "1",//是否打印错误,默认打印，"1"为开启，"0"为关闭
-	        storage : cur.getAttribute("storage") || "1",//是否开启文件缓存,默认开启，"1"为开启，"0"为关闭
-	        base : url.substr( 0, url.lastIndexOf('/') ) +"/",//文件路径
-	        nick : cur.getAttribute("nick") || "js",//默认外部组件调用名称
-	        rtime : cur.getAttribute("rtime") || "3600",//数据缓存时间，设置为0则不缓存
-	        erase : cur.getAttribute("erase") || "0"//是否擦除所有缓存,默认关闭，"1"为开启，"0"为关闭
-        };
-    })(document.getElementsByTagName( "script" ));
-    //console.log(xp.config);
-    
+	(function(scripts, cur) {
+		cur = scripts[scripts.length - 1];
+		var url = cur.hasAttribute ? cur.src : cur.getAttribute('src', 4);
+		url = url.replace(/[?#].*/, '');
+		xp.config = {
+			debug : cur.getAttribute("debug") || "1", //是否打印错误,默认打印，"1"为开启，"0"为关闭
+			storage : cur.getAttribute("storage") || "1", //是否开启文件缓存,默认开启，"1"为开启，"0"为关闭
+			base : url.substr(0, url.lastIndexOf('/')) + "/", //文件路径
+			nick : cur.getAttribute("nick") || "js", //默认外部组件调用名称
+			rtime : cur.getAttribute("rtime") || "3600", //数据缓存时间，设置为0则不缓存
+			erase : cur.getAttribute("erase") || "0"//是否擦除所有缓存,默认关闭，"1"为开启，"0"为关闭
+		};
+	})(document.getElementsByTagName("script"));
+	//console.log(xp.config);
+	xp.noConflict = function() {
+		if ( window.$ === xp ) {
+			window.$ = _$;
+		}
+		return xp;
+	};
 	window.$ = window.xp = xp;
-
-	
+if ( typeof define === "function" && define.amd ) {
+	define( "xp", [], function () { return xp; } );
+}
 })(window)
