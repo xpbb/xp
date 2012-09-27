@@ -1,5 +1,27 @@
 (function(window){
-//from easyjs
+/*
+ * css控制器 （from easyjs）
+ * 
+ * 外部暴露的方法有： 
+ * 
+ * 		1. css (elem, name, val ) // 获取元素的css或者设值
+ * 		2. width(elem) //得到宽度
+ * 		3. height(elem) //得到高度
+ * 		4. innerWidth: (elem)
+ * 		5. innerHeight: (elem)
+ * 		6. outerWidth: (elem)
+ * 		7. outerHeight: (elem)
+ * 		8. scrollLeft: (elem, val )
+ * 		9. scrollTop: (elem, val )
+ * 		10. offset: (elem) return { top : 0, left : 0 }
+ * 		11. parseColor: ( val ) //解析颜色值，统一输出RGB格式的颜色值
+ * 		12. getSize: ( elem, type, extra ) //获取元素的尺寸
+ * 		13. swap: ( elem, fn ) //将元素从隐藏状态切换到显示状态，执行回调后再隐藏元素，用于获取尺寸
+ * 		14. getWindow(elem) // 获取当前帧的窗口(window)元素
+ * 
+ * @time 2012/09/27 优化了代码，减少对dom的污染
+ */
+
 xp.css = function(){
 	var rPosition = /^(?:left|right|top|bottom)$/i,
 	rBorderWidth = /^border(\w)+Width$/,
@@ -320,13 +342,13 @@ cssHooks.zIndex = {
 	};
 	
 	// width、height方法直接调用css('width')、css('height')，性能更好
-	xp.prototype[ name ] = function(){
-		return parseFloat( cssHooks[name].get(this[0]) );
+	Style[ name ] = function(elem){
+		return parseFloat( cssHooks[name].get(elem) );
 	};	
 		
 	[ 'outer', 'inner' ].forEach(function( name ){
-		xp.prototype[ name + upName ] = function(){
-			var elem = this[0];
+		Style[ name + upName ] = function(elem){
+			//var elem = this[0];
 			return Style.swap( elem, function(){
 				return Style.getSize( elem, upName, name );
 			});
@@ -335,13 +357,13 @@ cssHooks.zIndex = {
 
 });
 
-xp.extend({
+xp.extend(Style, {
 	
-	css : function( name, val ){		
+	css : function(elem, name, val ){		
 		if( xp.isPlainObject(name) ){
 			xp.each( name, function( name, val ){
-				this.css( name, val );
-			}, this );
+				xp.css.css( elem, name, val );
+			} );
 			return this;
 		}
 		
@@ -350,12 +372,12 @@ xp.extend({
 			name.replace( /\-([a-z])/g, function( _, word ){
 				return word.toUpperCase();
 			});
-				
+		//console.log(name);		
 		var hooks = cssHooks[ name ],
 			offset, parentOffset, elem;
 		
 		if( val === undefined ){
-			elem = this[0];
+			//elem = this[0];
 			if( elem && elem.nodeType === 1 ){
 				
 				if( hooks && hooks.get ){
@@ -366,21 +388,21 @@ xp.extend({
 				
 				// 处理top、right、bottom、left为auto的情况
 				if( rPosition.test(name) && val === 'auto' ){
-					var offset = this.offset(),
+					var offset = this.offset(elem),
+					//offsetParent:是指元素最近的定位（relative,absolute）祖先元素，如果没有祖先元素是定位的话，会指向body元素
+　　　　　　　		//作用：元素的偏移量（offsetLeft,offsetTop）就是以这个祖先元素为参考点的
 						parent = elem.offsetParent,
-						$parent = xp( elem.offsetParent ),
-						parentOffset = $parent.offset();
-						
+						parentOffset = this.offset(parent);
 					if( name === 'left' || name === 'top' ){
 						return offset[ name ] - parentOffset[ name ] - parseFloat( getStyle(parent, 'border' + xp.capitalize(name) + 'Width') ) + 'px'; 
 					}
 					
 					if( name === 'right' ){
-						return $parent.outerWidth() + parentOffset.left - this.outerWidth() - offset.left - parseFloat( getStyle(parent, 'borderRightWidth') ) + 'px';
+						return this.outerWidth(parent) + parentOffset.left - this.outerWidth(elem) - offset.left - parseFloat( getStyle(parent, 'borderRightWidth') ) + 'px';
 					}
 					
 					if( name === 'bottom' ){
-						return $parent.outerHeight() + parentOffset.top - this.outerHeight() - offset.top - parseFloat( getStyle(parent, 'borderBottomWidth') ) + 'px';
+						return this.outerHeight(parent) + parentOffset.top - this.outerHeight(elem) - offset.top - parseFloat( getStyle(parent, 'borderBottomWidth') ) + 'px';
 					}
 				}
 				
@@ -392,24 +414,28 @@ xp.extend({
 				return val;	
 			}
 		}
-		
+		//把val转化成字符串
 		val += ''; 
-		
-		return this.forEach(function(){
-			if( this.nodeType === 1 ){
+		if(elem.nodeType){
+			elem = [elem];
+		}
+		//console.log(elem);
+		elem.forEach(function(el){
+			if( el.nodeType === 1 ){
 				if( hooks && hooks.set ){
-					hooks.set( this, val );
+					hooks.set( el, val );
 				}
 				else{
-					this.style[ name ] = val;
+					el.style[ name ] = val;
 				}
 			}
+			//return this;
 		});
+		return this;
 	},
 		
-	offset : function(){
-		var elem = this[0],
-			box;		
+	offset : function(elem){
+		var box;		
 			
 		if( !elem ){
 			return { top : 0, left : 0 };
@@ -424,7 +450,6 @@ xp.extend({
 				return { top : 0, left : 0 };
 			}
 		}
-	
 		var doc = elem.ownerDocument,
 			docElem = doc.documentElement,
 			body = doc.body,
@@ -447,11 +472,11 @@ xp.extend({
 // scrollTop和scrollLeft的原型方法拼装
 [ 'Left', 'Top' ].forEach(function( name ){	
 	var method = 'scroll' + name;
-	xp.fn[ method ] = function( val ){
+	Style[ method ] = function(elem, val ){
 		var elem, win;
 		// get scrollTop/scrollLeft
 		if( val === undefined ){
-			elem = this[0];
+			//elem = this[0];
 			if( !elem ){
 				return null;
 			}
@@ -463,16 +488,20 @@ xp.extend({
 		}
 		// set scrollTop/scrollLeft
 		else{
-			return this.forEach(function(){
-				win = Style.getWindow( this );
+			if(elem.nodeType){
+				elem = [elem];
+			}
+			elem.forEach(function(el){
+				win = Style.getWindow( el );
 
 				if( win ){
 					win.document.documentElement[ method ] = win.document.body[ method ] = val;
 				}
 				else{
-					this[ method ] = val;
+					el[ method ] = val;
 				}
 			});
+			return this;
 		}	
 	};
 });

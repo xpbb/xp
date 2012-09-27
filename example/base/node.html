@@ -1,0 +1,37 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<title>测试class</title>
+<script type="text/javascript" language="javascript" src="../../include.js"></script>
+<script>
+$(function(){
+var t = xp.dom.id("t");
+//console.log(t);
+console.log(xp.css.css(t,"width","300px"));
+console.log(xp.css.offset(t));
+console.log(xp.css.css(t,{margin:"9px"}));
+console.log(xp.css.scrollLeft(t));
+console.log($("#t").width());
+console.log($("#t").height());
+console.log($("#t").left());
+console.log($("#t").top());
+console.log(xp.dom.width(t));
+$("#t").hide();
+$("#t").show();
+console.log($("div").get("last").getAttrs());
+});
+
+</script>
+</head>
+<body>
+<style>
+.test{width:100px;height:100px;margin:8px;display:block;}
+</style>	
+<div class="test" id="t" style="width:200px;height:50px;background:#fff000;left:20px">ddd</div>	
+<div id="test1">
+	<div id="test2"></div>
+	<div id="test3"></div>
+</div>
+</body>
+</html>

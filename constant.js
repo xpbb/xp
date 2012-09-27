@@ -52,8 +52,8 @@ xp.constant = (function() {
 				//处理静态类
 				var names = xp.namespace(name);
 				if(xp.getLen(names) > 0){
-					//如果存在则挂载一次
-					this.set(name,names);
+					//如果存在则直接返回，不用挂载节省内存
+					//this.set(name,names);
 					return names;
 				}else{
 					//这里做错误回收处理

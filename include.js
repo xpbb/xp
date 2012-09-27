@@ -12,16 +12,18 @@ var _jsArr = [
 "class.js",
 "dom.js",
 "css.js",
+"node.js",
 "query.js",
 "ajax.js",
 "db.js",
 "cookie.js",
 "event.js",
-"ready.js",
+"ready.js"
 //"ui.js",
 //"ui/box.js",
 //"ui/datagrid.js",
-"ui/select.js"];
+//"ui/select.js"
+];
 for( var i = 0, len = _jsArr.length; i < len; i++ ) {
-    document.write("<script src=../../src/" + _jsArr[i] + " ><\/scr" + "ipt>");
+    document.write("<script src=../../" + _jsArr[i] + " ><\/scr" + "ipt>");
 }

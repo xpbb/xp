@@ -1,7 +1,7 @@
 /**
  * xp类式继承，适合用户类库的内部
  * @calss
- * @exmaple /example/base/class.html
+ * @exmaple /example/base/inherit.html
  * @time 2012/09/26 完成基础封装
  */
 xp.extend({

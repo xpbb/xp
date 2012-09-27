@@ -83,10 +83,10 @@ xp.db = function() {
 					if (ct < chTime) {
 						func.call(this, chData);
 					} else {//过期的情况
-						xp.ajax(url, {'onSuccess' : success});
+						xp.ajax.get(url, {'onSuccess' : success});
 					}
 				} else {
-					xp.ajax(url, {'onSuccess' : success});
+					xp.ajax.get(url, {'onSuccess' : success});
 				}
 			}
 			

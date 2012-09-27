@@ -21,10 +21,12 @@
 			}
 			if (typeof selector === "string") {
 				if (selector.substring(0, 1) === "#") {
-					return document.getElementById(selector.substring(1));
+					xp.node.el[0] = document.getElementById(selector.substring(1));
+					return xp.node;
 				}
 				if (!context || context.nodeType) {
-					return xp.query(selector, context);
+					xp.node.el = xp.query(selector, context);
+					return xp.node;
 				}
 				if (~selector.indexOf(".js")) {
 					xp.require(selector, context, func);
@@ -37,14 +39,14 @@
 				xp.require(selector, context, func);
 			}
 			if (selector.nodeType) {
-				this.context = this[0] = selector;
-				return this;
+				xp.node.el[0] = selector;
+				return xp.node;
 			}
 			//动态加载
 			if (typeof selector === "function") {
-				xp.ready(selector);
-				return this;
+				xp.ready(selector);	
 			}
+			return this;
 		}
 	};
 

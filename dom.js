@@ -4,8 +4,10 @@
  * @class xp.dom
  * @time 2012/08/10 完成骨架
  * @time 2012/08/15 完成attr处理系列
+ * @time 2012/09/27 增加了dom位置操作
  */
-	var _getDoc = null, _win = window.contentWindow ? window.contentWindow : window, _doc = document, DocumentElement, HeadElement, BodyElement;
+	var _getDoc = null, _win = window.contentWindow ? window.contentWindow : window, _doc = document, 
+	DocumentElement, HeadElement, BodyElement;
 	xp.dom = {
 		/**
 		 * 获取DocumentElement
@@ -43,9 +45,6 @@
 		},
 		/**
 		 * 获取元素所属的 window 对象
-		 * returns the appropriate window.
-		 * @param {HTMLElement} element optional Target element.
-		 * @return {Object} The window for the given element or the default window.
 		 */
 		getWin : function(element) {
 			var doc = this.getDoc(element);
@@ -53,9 +52,6 @@
 		},
 		/**
 		 * 获取文档的头节点
-		 * returns the head of the doc
-		 * @param {HTMLElement} element optional Target element.
-		 * @return {Object} The window for the given element or the default window.
 		 */
 		getHead : function() {
 			if (!HeadElement) {
@@ -64,6 +60,9 @@
 			}
 			return HeadElement;
 		},
+		/**
+		 * 获取文档的主体
+		 */
 		getBody : function() {
 			if (!BodyElement) {
 				var doc = this.getDoc();
@@ -182,33 +181,110 @@
 			}
 			return false;
 		},
+		/**
+		 * 获取当前对象的首个子节点
+		 * @param {Element} element Dom元素
+		 * @return {Element}
+		 */
+		first : function(element) {
+			return element.firstChild;
+		},
+		/**
+		 * 获取当前对象的最后一个子节点
+		 * @param {Element} element Dom元素
+		 * @return {Element}
+		 */
+		last : function(element) {
+			return element.lastChild;
+		},
+		/**
+		 * 获取当前对象的下一个兄弟节点
+		 * @param {Element} element Dom元素
+		 * @return {Element}
+		 */
 		next : function(element) {
 			return element.nextSibling;
 		},
+		/**
+		 * 获取当前对象的上一个兄弟节点
+		 * @param {Element} element Dom元素
+		 * @return {Element}
+		 */
 		prev : function(element) {
 			return element.previousSibling;
 		},
-		hasClass : function(element, cls) {
-			return element.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
-		},
-		addClass : function(element, cls) {
-			!this.hasClass(element, cls) && (element.className += " " + cls);
-		},
-		removeClass : function(element, cls) {
-			this.hasClass(element, cls) && (element.className = element.className.replace(new RegExp('(\\s|^)' + cls + '(\\s|$)'), ""))
-		},
-		replaceClass : function(el, oldClassName, newClassName) {
-			this.removeClass(el, oldClassName);
-			this.addClass(el, newClassName);
-		},
-		removeDom : function(element) {
+		/**
+		 * 删除目标元素的所有子元素
+		 * @param {Element} elem 指定元素 
+		 */
+		removeChild : function(element) {
 			while (element.firstChild) {
 				element.removeChild(element.firstChild);
 			}
 			return element;
 		},
+		/**
+		 * 删除目标元素
+		 * @param {Element} elem 指定元素 
+		 */
 		removeSelf : function(element) {
-			element && element.parentNode.removeChild(element);
+			element.nodeType && element.parentNode.removeChild(element);
+		},
+		/**
+		 * 获取当前对象父元素
+		 * @param {Element} element Dom元素
+		 * @return {Element}
+		 */
+		parent : function(element) {
+			return element.parentNode;
+		},
+		/**
+		 * 获取当前对象所有祖先元素
+		 * @param {Element} elem Dom元素
+		 * @return {Array}
+		 */
+		parents : function(element) {
+			var elems = [];
+			do {
+				element = this.parent(element);
+				if(element && element.nodeType !== 9) {
+					elems.push(element);
+				}
+			} while(element);
+			return elems;
+		},
+		/**
+		 * 将指定元素添加至目标元素之后
+		 * @param {Element} element 指定元素
+		 * @param {Element} target 目标元素
+		 */
+		insertAfter : function(element, target) {
+			var parent = this.parent(target);
+			if(this.last(parent) === target) {
+				this.append(element, parent);
+			} else {
+				target = this.next(target);
+				this.insertBefore(element, target);
+	
+			}
+		},
+		/**
+		 * 将指定元素添加至目标元素之前
+		 * @param {Element} elem 指定元素
+		 * @param {Element} target 目标元素
+		 */
+		insertBefore : function(element, target) {
+			var parent = this.parent(target);
+			parent.insertBefore(element, target);
+		},
+		/**
+		 * 将目标元素替换指定元素
+		 * @param {Element} target 目标元素
+		 * @param {Element} element 指定元素
+		 */
+		replace : function(target, element) {
+			var parent = this.parent(element);
+			parent.replaceChild(target, element);
 		},
 		/**
 		 * 根据 attribute 获取元素
@@ -249,9 +325,19 @@
 			} while (!jumpOut);
 			return result;
 		},
+		/**
+		 * 得到元素的属性
+		 * @param {HTMLElement} element
+		 * @param {String} value
+		 */
 		getAttr : function(element, value) {
 			return element.getAttribute(value);
 		},
+		/**
+		 * 通过id得到元素的属性
+		 * @param {HTMLElement} element
+		 * @param {String} attr
+		 */
 		getAttrById : function(id, attr) {
 			if (this.id(id)) {
 				return this.getAttr(this.id(id), attr) || null;
@@ -296,6 +382,7 @@
 		},
 		/**
 		 * 获取元素所有的属性
+		 * @param {HTMLElement} el
 		 * @return {Object}
 		 */
 		getAttrs : function(el) {
@@ -351,7 +438,85 @@
 			}
 			return element;
 		},
-
+		/**
+		 *
+		 *  对象模式创建模版
+		 *
+		 *  @param {Array} ats 生成的节点数组
+		 * 		@param {String} type 类型
+		 * 		@param {Array|Object} attr 属性
+		 * 		@param {Array|Object} child  子节点
+		 * 		@param {Number} num  子节生成个数
+		 * 		@param {Function} func  处理函数
+		 * 		@param {Array} data  数据
+		 *
+		 * 	@param {Element|String} target
+		 */
+		tpl : function(ats, target) {
+			target = this.id(target);
+			if (xp.isArray(ats) && ats.length > 0 && target.appendChild) {
+				for (var i = 0, len = ats.length; i < len; i++) {
+					var attrs = ats[i], tag = attrs.tag, attr = attrs.attr || {}, data = attrs.data, func = attrs.func, child = attrs.child, num = attrs.num ? attrs.num : 1, j = 0;
+					var fragment = document.createDocumentFragment();
+					for (; j < num; j++) {
+						var isFunc = false;
+						if (data) {
+							if (child) {
+								if (fast.isArray(child)) {
+									for (var k = 0, l = child.length; k < l; k++) {
+										child[k].data = data[j];
+									}
+								} else {
+									child.data = data[j];
+								}
+							} else {
+								if (func) {
+									attr = func(j, attr, data);
+									isFunc = true;
+								} else {
+									data = fast.values(data);
+									attr.text = data[j];
+								}
+							}
+						}
+						(isFunc === false) && func && ( attr = func(j, attr, data));
+						var nodes = this.node(tag, attr);
+						fragment.appendChild(nodes);
+						child && this.tpl(child, nodes);
+					}
+					target.appendChild(fragment);
+				}
+			}
+		},
+		/**
+		 * 创建文档片段
+		 * @return {DocumentFragment}
+		 */
+		createFragment : function() {
+			return document.createDocumentFragment();
+		},
+		/**
+		 * 根据HTML字符串创建Dom元素
+		 * @param {String} htmlStr html字符串
+		 * @return {DocumentFragment}
+		 */
+		createByHTML : function(htmlStr) {
+			if(!htmlStr) {
+				return null;
+			}
+			var div = document.createElement("div");
+			div.innerHTML = htmlStr;
+			var fragment = this.createFragment();
+			while(div.childNodes.length) {
+				fragment.appendChild(div.childNodes[0]);
+			}
+			div = null;
+			return fragment;
+		},
+		/**
+		 * 添加一段css到表头
+		 * @param {String} styleText css 样式
+		 */
 		createStyleNode : function(styleText, id) {
 			var styleNode = xp.node('style', {
 				'id' : id || '',
@@ -366,8 +531,16 @@
 			this.getDocHead().appendChild(styleNode);
 			return styleNode;
 		},
+		/**
+		 * 驼峰化处理classname
+		 * @param {String} str
+		 * @pravite 
+		 */
 		_camelCssName : function(str) {
-			if (~str.indexof("-")) {
+			if(!str){
+				return null;
+			}
+			if (xp.isString(str) && ~str.indexOf("-")) {
 				var a = str.split('-'), i = 1, len = a.length;
 				for (; i < len; i++) {
 					a[i] = a[i].substr(0, 1).toUpperCase() + a[i].substr(1);
@@ -378,12 +551,24 @@
 			}
 
 		},
+		/**
+		 * 批量设置css 
+		 * @param {Element} el 元素
+		 * @param {Object} style css
+		 */
 		css : function(el, style) {
 			el = this.id(el);
 			for (var name in style) {
 				name && this.setStyle(el, name, style[name]);
 			}
 		},
+		/**
+		 * 设置元素的样式
+		 * @param {Element} el 元素
+		 * @param {String} styleName css 属性名称
+		 * @param {String} value css 属性值
+		 * @return {String} 返回元素样式
+		 */
 		setStyle : function(el, styleName, value) {
 			var me = this;
 			if (!el) {
@@ -445,39 +630,109 @@
 				return style && style.getPropertyValue(styleName);
 			}
 		},
-		addCssText : function(el, cssText) {
-			el.style.cssText += ';' + cssText;
+		/**
+		 * 判断样式名是否存在
+		 * @param {Element} element Dom元素
+		 * @param {String} cls 样式名称
+		 * @return {Boolean}
+		 */
+		hasClass : function(element, cls) {
+			return element.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
 		},
+		/**
+		 * 增加样式名
+		 * @param {Element} element Dom元素
+		 * @param {String} cls 样式名称
+		 */
+		addClass : function(element, cls) {
+			!this.hasClass(element, cls) && (element.className += " " + cls);
+		},
+		/**
+		 * 删除样式名
+		 * @param {Element} element Dom元素
+		 * @param {String} cls 样式名称
+		 */
+		removeClass : function(element, cls) {
+			this.hasClass(element, cls) && (element.className = element.className.replace(new RegExp('(\\s|^)' + cls + '(\\s|$)'), ""))
+		},
+		/**
+		 * 替换样式名
+		 * @param {Element} element Dom元素
+		 * @param {String} oldClassName 被替换的样式名称
+		 * @param {String} newClassName 替换的样式名称
+		 */
+		replaceClass : function(element, oldClassName, newClassName) {
+			this.removeClass(element, oldClassName);
+			this.addClass(element, newClassName);
+		},
+		/**
+		 * 增加样式
+		 * @param {Element} element Dom元素
+		 * @param {String} cssText 样式
+		 */
+		addCssText : function(element, cssText) {
+			element.style.cssText += ';' + cssText;
+		},
+		/**
+		 * 设置样式
+		 * @param {Element} element Dom元素
+		 * @param {String} cssText 样式
+		 */
 		setCssText : function(el, cssText) {
 			el.style.cssText = cssText;
 		},
+		/**
+		 * 得到样式
+		 * @param {Element} element Dom元素
+		 */
 		getCssText : function(el) {
 			return el.style.cssText;
 		},
+		/**
+		 * 显示Dom元素
+		 * @param {Element} el Dom元素
+		 */
 		show : function(el, display) {
 			var display = display || "block";
-			xp.setStyle(el, "display", display);
+			this.setStyle(el, "display", display);
 		},
+		/**
+		 * 判断当前Dom元素是否可见
+		 * @param {Element} el Dom元素
+		 * @return {Boolean}
+		 */
 		isShow : function(el) {
-			var display = xp.getStyle(el, "display");
+			var display = this.getStyle(el, "display");
 			if (display === "none") {
 				return false
 			} else {
 				return true
 			}
 		},
+		/**
+		 * 如果当前Dom元素可见则设置为不可见，否则设置为可见
+		 * @param {Element} el Dom元素
+		 */
+		toggle : function(el) {
+			if(this.isShow(el)) {
+				this.hide(el);
+			} else {
+				this.show(el);
+			}
+		},
+		/**
+		 * 隐藏Dom元素
+		 * @param {Element} el Dom元素
+		 */
 		hide : function(el) {
-			setStyle(el, "display", "none");
+			this.setStyle(el, "display", "none");
 		},
 		/**
 		 * 获取文档的 scroll 高度，即文档的实际高度
-		 *
-		 * @memberOf dom
-		 *
-		 * @param {HTMLElement} element The html element.
-		 * @return {Number} The height of the actual document (which includes the body and its margin).
+		 * @param {HTMLElement} element
+		 * @return {Number} 
 		 */
-		getScrollHeight : function(el) {
+		scrollHeight : function(el) {
 			var scrollHeight;
 			if (el) {
 				scrollHeight = el.scrollHeight
@@ -486,7 +741,12 @@
 			}
 			return scrollHeight || 0
 		},
-		getScrollWidth : function(el) {
+		/**
+		 * 获取文档的 scroll 宽度，即文档的实际宽度
+		 * @param {HTMLElement} element
+		 * @return {Number} 
+		 */
+		scrollWidth : function(el) {
 			var scrollWidth;
 			if (el) {
 				scrollWidth = el.scrollWidth
@@ -495,23 +755,28 @@
 			}
 			return scrollWidth || 0
 		},
-		getClientHeight : function(el) {
+		/**
+		 * 获取文档的 scroll 高度，即文档的实际高度
+		 * @param {HTMLElement} element
+		 * @return {Number} 
+		 */
+		clientHeight : function(el) {
 			el = el || getDocumentElement();
 			return el.clientHeight;
 		},
-		getClientWidth : function(el) {
+		clientWidth : function(el) {
 			el = el || getDocumentElement();
 			return el.clientWidth;
 		},
-		getOffsetHeight : function(el) {
+		offsetHeight : function(el) {
 			el = el || getDocumentElement();
 			return el.offsetHeight
 		},
-		getOffsetWidth : function(el) {
+		offsetWidth : function(el) {
 			el = el || getDocumentElement();
 			return el.offsetWidth
 		},
-		getScrollLeft : function(el) {
+		scrollLeft : function(el) {
 			var scrollLeft;
 			if (el) {
 				scrollLeft = el.scrollLeft
@@ -520,7 +785,7 @@
 			}
 			return scrollLeft || 0
 		},
-		getScrollTop : function(el) {
+		scrollTop : function(el) {
 			var scrollTop;
 			if (el) {
 				scrollTop = el.scrollTop
@@ -535,7 +800,7 @@
 		 * @param {HTMLElement} el
 		 * @return Array [left,top]
 		 */
-		getClientXY : function(el) {
+		clientXY : function(el) {
 			var _t = 0, _l = 0;
 			if (el) {
 				if (document.documentElement.getBoundingClientRect && el.getBoundingClientRect) {// 顶IE的这个属性，获取对象到可视范围的距离。
@@ -553,7 +818,7 @@
 						return [0, 0];
 					}
 					var oDoc = el.ownerDocument;
-					var _fix = J.browser.ie ? 2 : 0;
+					var _fix = xp.ie ? 2 : 0;
 					//修正ie和firefox之间的2像素差异
 					_t = box.top - _fix + getScrollTop(oDoc);
 					_l = box.left - _fix + getScrollLeft(oDoc);
@@ -629,16 +894,16 @@
 		 * @return {String}
 		 *
 		 */
-		getPosX : function(el) {
-			return this.parseCssPx(xp.getStyle(el, 'left'));
+		left : function(el) {
+			return this.parseCssPx(this.getStyle(el, 'left'));
 		},
 		/**
 		 * 获取y坐标的简便方法
 		 * @param {HTMLElement} el
 		 * @return {String}
 		 */
-		getPosY : function(el) {
-			return this.parseCssPx(xp.getStyle(el, 'top'));
+		top : function(el) {
+			return this.parseCssPx(this.getStyle(el, 'top'));
 		},
 		/**
 		 * 获取宽度的简便方法
@@ -646,8 +911,8 @@
 		 * @return {String}
 		 *
 		 */
-		getWidth : function(el) {
-			return this.parseCssPx(xp.getStyle(el, 'width'));
+		width : function(el) {
+			return this.parseCssPx(this.getStyle(el, 'width'));
 		},
 		/**
 		 * 获取高度的简便方法
@@ -655,8 +920,8 @@
 		 * @return {String}
 		 *
 		 */
-		getHeight : function(el) {
-			return this.parseCssPx(xp.getStyle(el, 'height'))
+		height : function(el) {
+			return this.parseCssPx(this.getStyle(el, 'height'));
 		},
 		/**
 		 * 获取选择的文本
@@ -680,9 +945,9 @@
 		 * @param {HTMLElement} el
 		 * @return {String} 返回一个完整的url
 		 */
-		getHref : function(el) {
+		href : function(el) {
 			var result;
-			if (this.ie && this.ie <= 7) {
+			if (xp.ie && xp.ie <= 7) {
 				result = el.getAttribute('href', 4);
 			} else {
 				result = el.href;
@@ -692,8 +957,3 @@
 	};
 
 })(window);
-/**********************************/
-/**
- * v0.1 2012.9.02 完成dom的工具集
- *
- */
