@@ -226,7 +226,7 @@
 			}
 			var instance = instance || {},
 			// 读入用户配置
-			options = xp.extend(instance.options || {}, settings) || {},
+			options = xp.extend(options, instance.options || {}, settings),
 			global = instance.global || {};
 			// 执行实例初始化
 			instance.init && instance.init(options, global);

@@ -1,0 +1,3 @@
+xp.event.mousemove = function(){
+	
+}();

@@ -127,8 +127,8 @@
 	getTarget : function(event) {
 		return event.target || event.srcElement;
 	},
-	//Get charcode
-	getCharCode : function(event) {
+	//Get keycode
+	getKeyCode : function(event) {
 		if ( typeof event.charCode == "number") {
 			return event.charCode;
 		} else {
@@ -136,3 +136,4 @@
 		}
 	}
 };
+

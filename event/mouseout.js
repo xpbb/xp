@@ -1,0 +1,3 @@
+xp.event.mouseout = function(){
+	
+}();

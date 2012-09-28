@@ -12,14 +12,18 @@ console.log(xp.css.css(t,"width","300px"));
 console.log(xp.css.offset(t));
 console.log(xp.css.css(t,{margin:"9px"}));
 console.log(xp.css.scrollLeft(t));
-console.log($("#t").width());
-console.log($("#t").height());
-console.log($("#t").left());
-console.log($("#t").top());
+console.log(xp.node.g("#t").width());
+console.log(xp.node.g("#t").height());
+console.log(xp.node.g("#t").left());
+console.log(xp.node.g("#t").top());
 console.log(xp.dom.width(t));
-$("#t").hide();
-$("#t").show();
-console.log($("div").get("last").getAttrs());
+xp.node.g("#t").hide();
+xp.node.g("#t").show();
+console.log(xp.node.g("div").get("last").val());
+var attr = xp.attr;
+console.log(attr.val("test5"));
+console.log(attr.val("test6"));
+
 });
 
 </script>
@@ -30,8 +34,10 @@ console.log($("div").get("last").getAttrs());
 </style>	
 <div class="test" id="t" style="width:200px;height:50px;background:#fff000;left:20px">ddd</div>	
 <div id="test1">
-	<div id="test2"></div>
+	<div id="test2" js="click" event="show('test3')"></div>
 	<div id="test3"></div>
+	<select name="test5" id="test5"><option value="1">1</option><option value="2" selected="">2</option></select>
+	<input type="radio" name="test6" id="test6"  value="1"/>
 </div>
 </body>
 </html>

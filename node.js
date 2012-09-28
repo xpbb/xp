@@ -1,9 +1,14 @@
 /**
  * DOM封装操作类 
+ * @time 2012/09/27 完成基本封装
  */
 xp.node = function(){
 	var nodes = {
 		el : []
+	};
+	nodes.g = function(selector){
+		this.el = xp.query(selector);
+		return this;
 	};
 	//获取dom对象
 	nodes.get = function(pos){
@@ -36,7 +41,7 @@ xp.node = function(){
 	};
 	//批量处理一个参数的情况
 	var domFn = ["first","last","next","prev","removeChild","removeSelf","parent","parents",
-			 "getAttrs","getCssText",
+			 "getAttrs","getCssText","val",
 			 "scrollHeight","scrollWidth","clientHeight","clientWidth",
 			 "offsetHeight","offsetWidth","scrollLeft","scrollTop",
 			 "clientXY","getXY",
@@ -54,4 +59,4 @@ xp.node = function(){
 	);
 	return nodes;
 }();
-console.log(xp.node);
+//console.log(xp.node);
