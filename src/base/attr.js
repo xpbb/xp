@@ -1,4 +1,4 @@
-(function(window){
+
 /**
  * dom属性操作类
  * @time 2012/09/28 完成基本架构 
@@ -301,4 +301,3 @@ xp.attr = function(){
 			}
 	};	
 }();
-})(window)

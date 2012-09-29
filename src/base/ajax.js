@@ -45,7 +45,7 @@ xp.ajax = {
 			} catch (e) {
 			}
 			return false;
-		}
+		};
 		/**
 		 * @ignore
 		 */

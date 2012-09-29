@@ -16,7 +16,9 @@ xp("xp.event.click",{
 		//remove : null,
 		addCls : null,
 		setCls : null,
-		rmCls : null
+		rmCls : null,
+		tabs : null,
+		tags : null
 	},
 	init : function(options) {
 		var cache = this._getFunc(options);
@@ -26,7 +28,7 @@ xp("xp.event.click",{
 					i();
 				});
 			};
-			xp.event.on(xp.dom.id(options.id),"click",fn);
+			xp.event.on(options.id,"click",fn);
 		}
 	},
 	_getFunc : function(options) {

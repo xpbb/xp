@@ -63,5 +63,5 @@ xp.coookie = {
 			return now.toGMTString();
 		}
 	}
-}
+};
 

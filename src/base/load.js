@@ -110,4 +110,4 @@ xp.load = {
 			xp.event.on(window, 'scroll', loadNeeded);
 		});
 	}
-}
+};

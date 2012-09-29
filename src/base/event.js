@@ -2,7 +2,8 @@
  * 事件处理类
  * @class xp.event
  * @time 2012/09/15 完成类的on和un
- */xp.event = {
+ */
+xp.event = {
 	_listeners : this._listeners || [],
 	_eventFilter : this._eventFilter || [],
 	/**

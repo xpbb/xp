@@ -1,4 +1,3 @@
-(function(window){
 /**
  * 数据处理类
  * @class xp.db
@@ -93,4 +92,3 @@ xp.db = function() {
 		}
 	};
 }();
-})(window)

@@ -1,4 +1,4 @@
-(function(window){
+
 /*
  * css控制器 （from easyjs）
  * 
@@ -245,7 +245,7 @@ else{
 		
 			return ( bgPosition[x] || x ) + ' ' + ( bgPosition[y] || y );
 		}
-	}
+	};
 		
 	currentStyle = function( elem, name ){
 		var val = elem.currentStyle && elem.currentStyle[ name ],
@@ -509,4 +509,4 @@ xp.extend(Style, {
 return Style;
 
 }();
-})(window)
+

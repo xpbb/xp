@@ -1,4 +1,3 @@
-(function() {
 /**
  * require加载类
  * @class xp.require
@@ -184,4 +183,3 @@ xp.require = function(){
 	return require;
 }();
 
-})()
