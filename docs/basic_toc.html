@@ -4,8 +4,8 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
 	<meta name="robots" content="all">
-	<meta name="description" content="首页 xpjs 中文手册, xpjs 用户指南, xpjs User Guide, Wiki 文档 ">
-	<title>首页 xpjs 用户指南 - xpjs 中文手册|用户手册|用户指南|Wiki文档 </title>
+	<meta name="description" content="目录 xpjs 中文手册, xpjs 用户指南, xpjs User Guide, Wiki 文档 ">
+	<title>目录 xpjs 用户指南 - xpjs 中文手册|用户手册|用户指南|Wiki文档 </title>
 	<link rel="stylesheet" type="text/css" media="all" href="img/css.css">
 	<script type="text/javascript" src="../src/xp.js"></script>		
 </head>
@@ -38,7 +38,7 @@
   <tr>
     <td id="breadcrumb">
 		<a href="http://www.xpbb.com/" target="_blank">xpjs 首页</a>&nbsp;&#8250;&nbsp;
-<a href="index.html">xpjs 用户指南</a>&nbsp;&#8250;&nbsp;<a href="index.html">首页</a>	</td>
+<a href="index.html">xpjs 用户指南</a>&nbsp;&#8250;&nbsp;<a href="basic_toc.html">目录</a>	</td>
     <td id="searchbox">
 		<form method="get" action="#">
         搜索用户指南&nbsp;
@@ -54,32 +54,17 @@
 <a href="https://github.com/xpbb/xp/zipball/master" target="_blank">直接下载(DownLoad)</a>
 </div>
 <!-- START CONTENT --><div id="content">
-<h2>欢迎使用 xpjs</h2>
 
-<p>xpjs是一个javascript的组件库，xpjs的目标群体是<b>前端设计师</b>或前端工程师，设计目标是：让用户不用书写任何js的前提下完成一系列复杂的web操作，
-	尽量做到轻巧、简单、易用、稳定、兼容。使用xpjs可以减少代码的编写量，并将您的精力投入到项目的创造性设计上。</p>
+<h1>目录</h1>
+<table cellspacing="10" cellpadding="0" width="100%" border="0">
+    <tbody>
+        <tr>
+           <td valign="top" width="25%"><h3>基本信息</h3><ul><li><a href="basic_index.html">首页</a></li><li><a href="basic_toc.html">目录</a></li><li><a href="basic_license.html">许可协议</a></li><li><a href="basic_changelog.html">变更记录</a></li><li><a href="basic_about.html">关于xpjs</a></li></ul><h3>安装</h3><ul><li><a href="install_download.html">下载xpjs</a></li><li><a href="install_install.html">安装指导</a></li><li><a href="install_setting.html">配置项目</a></li><li><a href="install_errors.html">错误调试</a></li></ul><h3>介绍</h3><ul><li><a href="introduce_start.html">开始</a></li><li><a href="introduce_what.html">xpjs是什么</a></li><li><a href="introduce_appflow.html">应用程序流程图</a></li><li><a href="introduce_target.html">架构目标</a></li></ul></td><td valign="top" width="25%"><h3>设计师主题</h3><ul><li><a href="office_license.html">单组件调用</a></li><li><a href="office_changelog.html">多组件调用</a></li><li><a href="office_about.html">组合调用</a></li></ul><h3>前端开发主题</h3><ul><li><a href="topic_start.html">开始一个类</a></li><li><a href="topic_extend.html">类继承</a></li><li><a href="topic_require.html">类依赖</a></li><li><a href="topic_interface.html">类接口</a></li><li><a href="topic_packer.html">调试打包</a></li></ul><h3>基础库教程（开发）</h3><ul><li><a href="base_xpbb.html">基类</a></li><li><a href="base_dom.html">dom类</a></li><li><a href="base_ajax.html">ajax</a></li><li><a href="base_attr.html">类接口</a></li><li><a href="base_cookie.html">调试打包</a></li><li><a href="base_css.html">调试打包</a></li><li><a href="base_db.html">调试打包</a></li><li><a href="base_event.html">调试打包</a></li><li><a href="base_load.html">调试打包</a></li></ul></td><td valign="top" width="25%"><h3>事件库教程</h3><ul><li><a href="event_click.html">点击事件</a></li><li><a href="event_changelog.html">变更记录</a></li><li><a href="event_about.html">关于xpjs</a></li></ul><h3>动画库教程</h3><ul><li><a href="animat_click.html">点击事件</a></li><li><a href="animat_changelog.html">变更记录</a></li><li><a href="animat_about.html">关于xpjs</a></li></ul></td><td valign="top" width="25%"><h3>ui库教程</h3><ul><li><a href="ui_license.html">许可协议</a></li><li><a href="ui_changelog.html">变更记录</a></li><li><a href="ui_about.html">关于xpjs</a></li></ul></td>
+        </tr>
+    </tbody>
+</table><p>&nbsp;</p>
 
-<h2>xpjs类库特点：</h2>
 
-<ul>
-    <li><strong>易用性</strong>：对于设计师来说，这是一套您不需要写任何js的js框架。xpjs尽量做到让用户少书写代码，多注重设计。
-    	用户只要书写简单的html不用写js即可完成复杂的web操作逻辑。</li>
-    <li><strong>模块化</strong>：对于前端开发人员来说，xpjs的类管理完成了类继承、依赖、接口、外部自动加载等一系列的类对象功能，适合于大型js项目的开发。</li>
-    <li><strong>可扩展性和调试性</strong>：xpjs具有完善的可扩展机制和错误排查机制，对二次开发人员来讲，尽量做到有错能查，查到能改。</li>
-    <li><strong>最小粒度开发</strong>：能分解的尽量分解，借助类管理机制可以让复杂的逻辑轻松解耦。</li>
-    <li><strong>dom和原生函数零污染</strong>：dom和原生函数的污染一直是一个js界争论的焦点，随着html5的盛行，webApp的复杂度成倍增加，对保持原生对象的零污染原则非常重要。</li>
-</ul>
-<h2>项目地址和交流：</h2>
-<ul>
-    <li>项目公开地址：<a href="https://github.com/xpbb/xp" target="_blank">https://github.com/xpbb/xp</a></li>
-    <li>项目交流QQ群：61591845</li>
-    <li>提交建议在这里：<a href="https://github.com/xpbb/xp/issues">https://github.com/xpbb/xp/issues</a></li>
-    <li>如果您想参加这份开源活动，请发邮件ttwxbbs@163.com或者加群号：61591845</li></ul><p>&nbsp;</p>
-<div id="Contributors">
-作者:
-skyboy（liuruitao）</div>
-<div id="DocDate">
-Time: 2012-09-29 20:55</div>
 </div><!-- END CONTENT -->
 <div id="footer">
   <p>

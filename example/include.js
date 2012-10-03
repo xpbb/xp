@@ -5,8 +5,12 @@ var _jsArr = [
 //"is.js",
 //"base.js",
 //"support.js",
+"base/ajax.js",
 "base/require.js",
 "base/load.js",
+"base/util.js",
+"base/async.js",
+"base/anim.js",
 //"error.js",
 //"constant.js",
 //"inherit.js",
@@ -16,7 +20,7 @@ var _jsArr = [
 "base/dom.js",
 "base/node.js",
 "base/query.js",
-"base/ajax.js",
+
 "base/db.js",
 "base/cookie.js",
 "base/event.js",
@@ -28,5 +32,5 @@ var _jsArr = [
 //"ui/select.js"
 ];
 for( var i = 0, len = _jsArr.length; i < len; i++ ) {
-    document.write("<script src=../src/" + _jsArr[i] + " ><\/scr" + "ipt>");
+    document.write("<script src=../../../src/" + _jsArr[i] + " ><\/scr" + "ipt>");
 }

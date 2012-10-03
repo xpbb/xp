@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:atom="http://www.w3.org/2005/Atom"
+	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+	xmlns:slash="http://purl.org/rss/1.0/modules/slash/"
+	>
+
+<channel>
+	<title>xpjs框架</title>
+	<atom:link href="http://www.xpjs.org/feed/" rel="self" type="application/rss+xml" />
+	<link>http://www.xpjs.org</link>
+	<description>一个不写js的js类库</description>
+	<lastBuildDate>Sun, 30 Sep 2012 15:23:03 +0000</lastBuildDate>
+	<language>zh-CN</language>
+	<sy:updatePeriod>hourly</sy:updatePeriod>
+	<sy:updateFrequency>1</sy:updateFrequency>
+	<generator>http://wordpress.org/?v=3.4.2</generator>
+		<item>
+		<title>js多重条件判断</title>
+		<link>http://www.xpjs.org/js%e5%a4%9a%e9%87%8d%e6%9d%a1%e4%bb%b6%e5%88%a4%e6%96%ad/</link>
+		<comments>http://www.xpjs.org/js%e5%a4%9a%e9%87%8d%e6%9d%a1%e4%bb%b6%e5%88%a4%e6%96%ad/#comments</comments>
+		<pubDate>Sun, 30 Sep 2012 14:57:32 +0000</pubDate>
+		<dc:creator>skyboy</dc:creator>
+				<category><![CDATA[javascript]]></category>
+		<category><![CDATA[复杂逻辑]]></category>
+
+		<guid isPermaLink="false">http://www.xpbb.com/?p=36</guid>
+		<description><![CDATA[javascript是一门精巧的语言，可大可小，可伸可缩，如意金箍棒一般，运用恰<span class="ellipsis">&#8230;</span><div class="read-more"><a href="http://www.xpjs.org/js%e5%a4%9a%e9%87%8d%e6%9d%a1%e4%bb%b6%e5%88%a4%e6%96%ad/">查阅全文 &#8250;</a></div><!-- end of .read-more -->]]></description>
+			<content:encoded><![CDATA[<p>javascript是一门精巧的语言，可大可小，可伸可缩，如意金箍棒一般，运用恰当，可敌千夫。比如一个场景，有的人要写上百行代码，但是有的人寥寥几笔即可实现，思路就在弹指间。要想学好一门语言，就要掌握其要义，归纳其精髓，方可如鱼得水，运筹帷幄。</p>
+<p>js在开发大型组件库的时候经常会碰到很多的逻辑分支情况。比如编辑器的编辑框编写：</p><pre class="crayon-plain-tag">if(target === "font"){
+someFunction(){...}
+}
+else if(target === "code"){
+someFunction(){...}
+}
+else if(target === "table"){
+someFunction(){...}
+}
+else if(target === "images"){
+someFunction(){...}
+}
+else if(target === "link"){
+someFunction(){...}
+}
+else if(target === "file"){
+someFunction(){...}
+}</pre><p>为了逻辑清晰当然也可以这样写：</p><pre class="crayon-plain-tag">switch(target){
+    case : "font" :
+           someFunction(){...} 
+    break; 
+    case : "code" :
+           someFunction(){...} 
+    break;
+    case : "table" :
+           someFunction(){...} 
+    break; 
+    case : "images" :
+           someFunction(){...} 
+    break; 
+    case : "link" :
+           someFunction(){...} 
+    break;
+
+　　case : "file" :
+           someFunction(){...} 
+    break;
+}</pre><p>当然这样的一层逻辑很容易书写和维护，但是，如果碰到下面还有多重分支的情况改如何处理呢，大部分人都是继续if else或者switch case。于是代码就变的越来越长，越来越难维护。就像下面的代码一样：</p><pre class="crayon-plain-tag">switch(target){
+    case : "font" :
+           someFunction(){...} 
+    break; 
+    case : "code" :
+          switch(code){
+                 case : "java" :
+                       someFunction(){...} 
+                 break;
+                 case : "c" :
+                       someFunction(){...} 
+                 break;
+                 case : "c++" :
+                       someFunction(){...} 
+                 break;
+          }
+
+    break;
+    case : "table" :
+           someFunction(){...} 
+    break; 
+    case : "images" :
+           someFunction(){...} 
+    break; 
+    case : "link" :
+           someFunction(){...} 
+    break;
+　　case : "file" :
+           someFunction(){...} 
+    break;
+}</pre><p>js是一门面向对象的语言，我们能不能用面向对象的思想来解决这个问题呢？请看下面的源码：</p><pre class="crayon-plain-tag">editor = {
+     "font" : function(){...}
+     "code" : function(){...}
+     "table" : function(){...}
+     "images" : function(){...}
+     "file" : function(){...}
+}
+
+editor[target]();</pre><p>这样是不是清晰明了了很多？而且效率也肯定提升了，因为是对象直接寻址。</p>
+<p>大致思路如下：</p>
+<p>先创建一个对象，把所有的判断分支都放到这个对象里，然后再调用。</p>
+<p>那么是么时候需要用这个方法，什么时候不需要用呢？</p>
+<p>先说需要用的：</p>
+<p>一、在判断分支很多的情况下建议使用。条理清晰。</p>
+<p>二、在分支里的逻辑很复杂的情况下，可以起到逻辑拆分的作用。</p>
+<p>再说不需要用的情况：</p>
+<p>一、简单的逻辑判断。</p>
+<p>二、分支比较少的情况。</p>
+]]></content:encoded>
+			<wfw:commentRss>http://www.xpjs.org/js%e5%a4%9a%e9%87%8d%e6%9d%a1%e4%bb%b6%e5%88%a4%e6%96%ad/feed/</wfw:commentRss>
+		<slash:comments>0</slash:comments>
+		</item>
+	</channel>
+</rss>

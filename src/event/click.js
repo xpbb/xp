@@ -1,3 +1,6 @@
+/**
+ * @name 点击事件 
+ */
 xp("xp.event.click",{
 	alias : "click",
 	options : {
@@ -33,7 +36,6 @@ xp("xp.event.click",{
 	},
 	_getFunc : function(options) {
 		var id = options.id, 
-		show = options.show,
 		dom = xp.dom, 
 		Status = ["show","hide","toggle","nextTo","prevTo","lastTo","firstTo"],
 		Doms = ["insertAfter", "insertBefore", "replace","swap"],
@@ -88,89 +90,3 @@ xp("xp.event.click",{
 		return cache;
 	}
 });
-/*
-xp("xp.event.click",function(){
-	var events = ["show", "hide", "toggle"], 
-	doms = ["insertAfter", "insertBefore", "replace"],
-	options = {
-		id : "example",
-		replace : null,
-		remove : null,
-		cls : null
-	}, 
-	id = options.id, 
-	show = options.show,
-	dom = xp.dom, cache = [];
-	if (xp.isString(id)) {
-		id = dom.id(id);
-	}
-	console.log(id);
-	if (show && xp.isString(show)) {
-		var _show = function(){
-			var ids = show.split(","), len = ids.length, i = 0;
-			show.split(",").forEach(function(val){
-				dom.show(dom.id(val));
-			});
-		}
-		cache.push(_show);
-	}
-	if (id && id.nodeType) {
-		
-	}
-	var init = function(options) {
-
-	};
-	return {
-		alias : "click",
-		options : options,
-		init : init
-	}
-});
-
-xp.event.click = {
-	options : {
-		id : "example",
-		show : null,
-		hide : null,
-		toggle : null,
-		insertAfter : null,
-		insertBefore : null,
-		replace : null,
-		remove : null,
-		cls : null
-	},
-	init : function(options) {
-		
-	}
-};
-xp.event.click = function() {
-	var events = ["show", "hide", "toggle"], doms = ["insertAfter", "insertBefore", "replace"], options = {
-		id : "example",
-		show : null,
-		hide : null,
-		toggle : null,
-		insertAfter : null,
-		insertBefore : null,
-		replace : null,
-		remove : null,
-		cls : null
-	}, id = options.id, dom = xp.dom, cache = [];
-	if (xp.isString(id)) {
-		id = dom.id(id);
-	}
-	if (id.nodeType) {
-		if (options.show && xp.isString(options.show)) {
-
-		}
-	}
-	var init = function(options) {
-
-	};
-	return {
-		options : options,
-		init : init
-	}
-	//target,cls,remove
-}()
-//tabs cycle 
-*/

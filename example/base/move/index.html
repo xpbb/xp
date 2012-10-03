@@ -1,0 +1,64 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<title>anim方法演示</title>
+<meta name="Keywords" content="anim方法演示" /> 
+<meta name="Description" content="anim方法演示" />
+<script type="text/javascript" language="javascript" src="../../../src/xp.js"></script>
+<style>
+*{margin:0;padding:0;}
+body{font:normal normal 12px/150% "Lucida Sans Unicode", "Lucida Grande", sans-serif;}
+a{ color:#09c; }
+a:hover{ color:#000; text-decoration:none; }
+ul{ list-style:none; }
+.f_r{ float:right; }
+#wrapper{width:960px;margin:2% auto 0; padding-bottom:50px;}
+.page_tit{ font-size:24px; font-weight:400; color:#151515; border-bottom:2px solid #b2b2b2; height:40px; line-height:40px; overflow:hidden; margin-bottom:20px; }
+.page_tit .f_r{ font-size:12px; margin:5px -10px 0 0; }
+.page_tit .f_r a{ margin-right:10px; }
+.demo_list{ width:960px; }
+.demo_list li{ width:960px; padding:20px 0; border-bottom:1px solid #c9c9c9; position:relative; min-height:190px; height:auto; _height:190px; }
+.btn { height:30px; line-height:30px; margin-bottom:15px; overflow:hidden; }
+.btn a{ font-size:12px; padding:0 10px; height:22px; line-height:22px; background:#fb219a; float:left; color:#fff; text-decoration:none; text-align:center; margin:3px 10px 0 0; border-radius:2px; }
+.btn a:hover{ background:#09c; color:#fff; }
+.box{ width:300px; height:300px; background:#2c2c2c; position:absolute; top:70px; line-height:100px; border:0px solid #fb219a; font-size:12px; color:#fff; text-align:center; overflow:hidden; }
+#box5{ border-width:5px; }
+</style>
+<script>
+$(function(){
+	//console.log($("#box1"));
+});
+</script>
+
+</head>
+<body>
+
+<div id="wrapper">
+	<h1 class="page_tit">anim Demo</h1>
+	<ul class="demo_list">
+		<li>
+			<div class="btn"><a href="javascript:void(0)" id="show">show</a><a href="javascript:void(0)" id="hide">hide</a></div>
+			<div class="box" id="box1" style="display: none"></div>
+		</li>
+
+	</ul>
+</div>
+
+<script>
+
+var $ = function(id){
+	return document.getElementById(id);
+};
+//console.log(xp.move);
+//console.log(xp.anim);
+$('show').onclick = function(){
+	xp.move.show('box1','width');
+	//easyAnim('box1').show( 'slow' );
+};
+
+
+</script>
+
+</body>
+</html>

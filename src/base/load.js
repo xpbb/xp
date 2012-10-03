@@ -3,18 +3,7 @@
  * @time 2012/09/25 完成基本骨架css/js/img 
  */
 xp.load = {
-	/**
-	 * 动态在页面上加载一个外部css文件
-	 * @param {string} path css文件路径
-	 */
-
-	css : function(path) {
-		var element = document.createElement("link");
-		element.setAttribute("rel", "stylesheet");
-		element.setAttribute("type", "text/css");
-		element.setAttribute("href", path);
-		document.getElementsByTagName("head")[0].appendChild(element);
-	},
+	
 	/**
 	 * 解析文件名 
 	 */
@@ -34,6 +23,25 @@ xp.load = {
 		
 	},
 	/**
+	 *css 
+	 */
+	_cssFile : {},
+	/**
+	 * 动态在页面上加载一个外部css文件
+	 * @param {string} path css文件路径
+	 */
+	css : function(path) {
+		if(!this._cssFile[path]){
+			xp.dom.node("link",{
+				'rel': 'stylesheet',
+				'type': 'text/css',
+				'href': path
+			},document.getElementsByTagName("head")[0]);
+			this._cssFile[path] = true;
+		}
+		return null;
+	},
+	/**
 	 * js堆栈 
 	 */
 	_jsFile : {},
@@ -49,9 +57,34 @@ xp.load = {
 				'src': path,
 				'defer': 'defer'
 			},document.getElementsByTagName("head")[0]);
-			//document.getElementsByTagName("head")[0].appendChild(els);
 			this._jsFile[path] = true;
 		}
+		return null;
+		
+	},
+	/**
+	 * html堆栈 
+	 */
+	_htmlFile : {},
+	/**
+	 * 动态在页面上加载一个外部js文件
+	 * @param {string} path js文件路径
+	 */
+	htm : function(path,target) {
+		if(!this._htmlFile[path]){
+			var dom = xp.dom,
+				id = dom.id(target),
+				width = dom.width(id) + "px",
+				height = dom.height(id) + "px";
+			xp.dom.node("iframe",{
+				'frameBorder': '0',
+				'src': path,
+				'width': width,
+				'height' : height
+			},id);
+			this._htmlFile[path] = true;
+		}
+		return null;
 		
 	},
 	/**
@@ -109,5 +142,20 @@ xp.load = {
 
 			xp.event.on(window, 'scroll', loadNeeded);
 		});
+	},
+	/**
+	 * 初始化执行
+	 * 
+	 */
+	init : function(options){
+		var id = options.id;
+		if(id && id.nodeType){
+			delete options.id;				
+			for(var p in options){	
+				if(this[p]){
+					this[p](options[p]);
+				}	
+			}
+		}
 	}
 };

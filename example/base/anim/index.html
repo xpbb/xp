@@ -1,0 +1,179 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<title>anim方法演示</title>
+<meta name="Keywords" content="anim方法演示" /> 
+<meta name="Description" content="anim方法演示" />
+<script type="text/javascript" language="javascript" src="../../../src/xp.js"></script>
+<style>
+*{margin:0;padding:0;}
+body{font:normal normal 12px/150% "Lucida Sans Unicode", "Lucida Grande", sans-serif;}
+a{ color:#09c; }
+a:hover{ color:#000; text-decoration:none; }
+ul{ list-style:none; }
+.f_r{ float:right; }
+#wrapper{width:960px;margin:2% auto 0; padding-bottom:50px;}
+.page_tit{ font-size:24px; font-weight:400; color:#151515; border-bottom:2px solid #b2b2b2; height:40px; line-height:40px; overflow:hidden; margin-bottom:20px; }
+.page_tit .f_r{ font-size:12px; margin:5px -10px 0 0; }
+.page_tit .f_r a{ margin-right:10px; }
+.demo_list{ width:960px; }
+.demo_list li{ width:960px; padding:20px 0; border-bottom:1px solid #c9c9c9; position:relative; min-height:190px; height:auto; _height:190px; }
+.btn { height:30px; line-height:30px; margin-bottom:15px; overflow:hidden; }
+.btn a{ font-size:12px; padding:0 10px; height:22px; line-height:22px; background:#fb219a; float:left; color:#fff; text-decoration:none; text-align:center; margin:3px 10px 0 0; border-radius:2px; }
+.btn a:hover{ background:#09c; color:#fff; }
+.box{ width:100px; height:100px; background:#2c2c2c; position:absolute; top:70px; line-height:100px; border:0px solid #fb219a; font-size:12px; color:#fff; text-align:center; overflow:hidden; }
+#box5{ border-width:5px; }
+</style>
+<script>
+$(function(){
+	//console.log($("#box1"));
+});
+</script>
+
+</head>
+<body>
+
+<div id="wrapper">
+	<h1 class="page_tit"><span class="f_r">by : <a href="http://stylechen.com">Stylechen.com</a><a href="http://stylechen.com/easyanim.html">How to use ?</a></span>easyAnim Demo</h1>
+	<ul class="demo_list">
+		<li>
+			<div class="btn"><a href="javascript:void(0)" id="show">show</a><a href="javascript:void(0)" id="hide">hide</a></div>
+			<div class="box" id="box1"></div>
+		</li>
+		<li>
+			<div class="btn"><a href="javascript:void(0)" id="slideUp">slideUp</a><a href="javascript:void(0)" id="slideDown">slideDown</a><a href="javascript:void(0)" id="slideToggle">slideToggle</a></div>
+			<div class="box" id="box2"></div>
+		</li>
+		<li>
+			<div class="btn"><a href="javascript:void(0)" id="fadeIn">fadeIn</a><a href="javascript:void(0)" id="fadeOut">fadeOut</a></div>
+			<div class="box" id="box3"></div>
+		</li>
+		<li>
+			<div class="btn"><a href="javascript:void(0)" id="customw">custom : width</a><a href="javascript:void(0)" id="customh">custom : height</a><a href="javascript:void(0)" id="custombdw">custom : borderWidth</a><a href="javascript:void(0)" id="customfz">custom : fontSize</a></div>
+			<div class="box" id="box4">easyAnim</div>
+		</li>
+		<li>
+			<div class="btn"><a href="javascript:void(0)" id="customc">custom : backgroundColor & color & borderColor</a></div>
+			<div class="box" id="box5">easyAnim</div>
+		</li>
+		<li>
+			<div class="btn"><a href="javascript:void(0)" id="customleft">custom : left</a></div>
+			<div class="box" id="box6"></div>
+		</li>
+		<li>
+			<div class="btn"><a href="javascript:void(0)" id="queue">queue</a><a href="javascript:void(0)" id="stop1">stop()</a><a href="javascript:void(0)" id="stop2">stop( false, true )</a><a href="javascript:void(0)" id="stop3">stop( true, false )</a><a href="javascript:void(0)" id="stop4">stop( true, true )</a></div>
+			<div class="box" id="box7"></div>
+		</li>
+	</ul>
+</div>
+
+<script>
+
+var $ = function(id){
+	return document.getElementById(id);
+};
+console.log(xp.anim);
+var callback = function(){
+	alert( 'I am is callback' );
+};
+
+$('show').onclick = function(){
+	xp.anim.show('box1','slow');
+	//easyAnim('box1').show( 'slow' );
+};
+
+$('hide').onclick = function(){
+	xp.anim.hide('box1','slow');
+	//easyAnim('box1').hide( 'slow' );
+};
+
+$('slideUp').onclick = function(){
+	xp.anim.slideUp('box2','slow', 'easeOutStrong');
+};
+
+$('slideDown').onclick = function(){
+	xp.anim.slideDown('box2','slow', 'easeOutStrong');
+};
+
+$('slideToggle').onclick = function(){
+	xp.anim.slideToggle('box2','slow', 'easeOutStrong');
+};
+
+$('fadeIn').onclick = function(){
+	easyAnim('box3').fadeIn( 'slow' );
+};
+
+$('fadeOut').onclick = function(){
+	easyAnim('box3').fadeOut( 'slow' );
+};
+
+$('customw').onclick = function(){
+	easyAnim('box4').custom( { width : '0px' }, 'slow' );
+};
+
+$('customh').onclick = function(){
+	easyAnim('box4').custom( { height : '0px' }, 'slow' );
+};
+
+$('custombdw').onclick = function(){
+	easyAnim('box4').custom({ 
+		borderTopWidth : '10px', 
+		borderRightWidth : '10px',
+		borderBottomWidth : '10px',
+		borderLeftWidth : '10px' 
+	}, 'fast' );
+};
+
+$('customfz').onclick = function(){
+	easyAnim('box4').custom( { fontSize : '20px' }, 'fast' );
+};
+
+$('customc').onclick = function(){
+	easyAnim('box5').custom({
+		backgroundColor : '#fb219a',
+		color : '#000',
+		borderTopColor : '#2c2c2c',
+		borderRightColor : '#2c2c2c',
+		borderBottomColor : '#2c2c2c',
+		borderLeftColor : '#2c2c2c' 
+	}, 2000, 'easeBoth' );
+};
+
+$('customleft').onclick = function(){
+	easyAnim('box6').custom( { left : '860px' }, 1000, 'bounce' );
+};
+
+$('queue').onclick = function(){
+	easyAnim('box7').custom( { left : '860px' }, 'slow' )
+		.custom( { backgroundColor : '#fb219a' } )
+		.delay( 1000 )
+		.custom( { left : '430px' }, 'slow' )
+		.slideUp()
+		.slideDown()
+		.custom( { backgroundColor : '#09c' }, 800, 'easeOutStrong' )
+		.delay( 500 )
+		.custom( { left : '0px' }, 'slow' )
+		.custom( { backgroundColor : '#2c2c2c' }, 'slow' );
+};
+
+$('stop1').onclick = function(){
+	easyAnim('box7').stop();
+};
+
+$('stop2').onclick = function(){
+	easyAnim('box7').stop( false, true );
+};
+
+$('stop3').onclick = function(){
+	easyAnim('box7').stop( true, false );
+};
+
+$('stop4').onclick = function(){
+	easyAnim('box7').stop( true, true );
+};
+
+</script>
+
+</body>
+</html>

@@ -383,7 +383,12 @@
 	xp.each("Boolean Number String Function Array Date RegExp Object".split(" "), function(i, name) {
 		class2type["[object " + name + "]"] = name.toLowerCase();
 	});
-
+	xp.each("android ipad iphone linux macintosh windows x11".split(" "), function( i, item ) {
+        //var key = item.charAt(0).toUpperCase() + item.toLowerCase().substr( 1 );
+        xp[ "is" + item ] = ua.indexOf( item ) > -1;
+        
+    });
+    //console.log(xp.android);
 	/**
 	 * xp的一些基础公用函数
 	 * @calss
@@ -391,10 +396,7 @@
 	 * @time 2012/09/02 增加模版
 	 * @time 2012/09/25 增加parseXML、parseJSON、getArgs函数
 	 */
-	var rValidtokens = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, 
-	rValidescape = /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, 
-	rValidbraces = /(?:^|:|,)(?:\s*\[)+/g, 
-	rSelectForm = /^(?:select|form)$/i, rValidchars = /^[\],:{}\s]*$/;
+	
 	//_push = Array.prototype.push,
 	//_indexOf = Array.prototype.indexOf,
 	//_trim = String.prototype.trim;
@@ -500,21 +502,29 @@
 		 * 解析json
 		 */
 		parseJSON : function(data) {
-			if (!data || !xp.isString(data)) {
+			if ( !data || typeof data !== "string") {
 				return null;
 			}
-
-			data = data.trim();
-
+			var data = data.trim();
 			// 标准浏览器可以直接使用原生的方法
-			if (window.JSON && window.JSON.parse) {
-				return window.JSON.parse(data);
+			if ( window.JSON && window.JSON.parse ) {
+				try{
+					return window.JSON.parse( data );
+				}catch(_){}
 			}
-
-			if (rValidchars.test(data.replace(rValidescape, '@').replace(rValidtokens, ']').replace(rValidbraces, ''))) {
-
-				return (new Function('return ' + data))();
+			var rValidtokens = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, 
+				rValidescape = /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g, 
+				rValidbraces = /(?:^|:|,)(?:\s*\[)+/g, 
+				rValidchars = /^[\],:{}\s]*$/;
+			if ( rValidchars.test( data.replace( rValidescape, "@" )
+				.replace( rValidtokens, "]" )
+				.replace( rValidbraces, "")) ) {
+					try{
+						return ( new Function( "return " + data ) )();
+					}catch(_){}
+					
 			}
+			return null;
 		},
 
 		/**
@@ -525,6 +535,14 @@
 		capitalize : function(str) {
 			var firstStr = str.charAt(0);
 			return firstStr.toUpperCase() + str.replace(firstStr, '');
+		},
+		/**
+		 * 给数组添加新的元素，并改变数组本身
+		 * @param {Array} arr1
+		 * @param {Array} arr2
+		 */
+		push : function( arr1, arr2 ){
+			return Array.prototype.push.apply(arr1,arr2);
 		},
 		/**
 		 * 判断对象是否拥有某个属性
@@ -780,6 +798,20 @@
 				alias && (aliass[prefix + alias] = prefix + name);
 			},
 			/**
+			 *删除常量 
+			 */
+			rm : function(name){
+				if(xp.has(constants, prefix + name)){
+					delete constants[prefix + name];
+					return null;
+				}
+				if(xp.has(aliass, prefix + name)){
+					delete constants[aliass[prefix + name]];
+					delete aliass[prefix + name];
+					return null;
+				}
+			},
+			/**
 			 * 批量设置常量
 			 */
 			sets : function(obj) {
@@ -817,8 +849,7 @@
 		};
 	})(); 
 	
-	
-	
+
 	
 	/**
 	 * xp类管理
@@ -1058,6 +1089,7 @@
 				}
 
 				var instance = xp.clone(claz);
+				//var instance = claz;
 				this._clsStack[name] = instance;
 			} else {
 				var instance = this._clsStack[name];

@@ -510,11 +510,22 @@ xp.dom = function() {
 		getAttrs : function(el) {
 			var el = this.id(el), name = el.tagName, rt = {};
 			if (name) {
-				var name = name.toLowerCase(), r = /\<(\s|\S)*?\>/, str = el.outerHTML, s = r.exec(str)[0].replace("<" + name, "").replace(">", "").split(" "), l = s.length, i = 0;
+				var name = name.toLowerCase(), r = /\<(\s|\S)*?\>/, str = el.outerHTML, 
+				s = r.exec(str)[0].replace("<" + name, "").replace(">", "").split(" "), l = s.length, i = 0;
+				
 				for (; i < l; i++) {
 					if (s[i] && s[i].indexOf("=") > -1) {
 						var t = s[i].split("=");
-						t[1] && (rt[t[0]] = t[1].replace(/"/g, ''));
+						if(t[1]){
+								
+							//格式化参数名
+							var n = t[0].toLowerCase();
+							if(n.indexOf("-") > -1){
+								n = this._camelCssName(n);
+							}
+							rt[n] = t[1].replace(/"/g, '');
+						}
+						
 					}
 				}
 				rt["_tagName"] = name;
@@ -658,17 +669,14 @@ xp.dom = function() {
 		 * @pravite
 		 */
 		_camelCssName : function(str) {
-			if (!str) {
-				return null;
-			}
-			if (xp.isString(str) && ~str.indexOf("-")) {
+			if(str.indexOf("-") === -1){
+				return str;
+			}else{
 				var a = str.split('-'), i = 1, len = a.length;
 				for (; i < len; i++) {
 					a[i] = a[i].substr(0, 1).toUpperCase() + a[i].substr(1);
 				}
 				return a.join('');
-			} else {
-				return str;
 			}
 
 		},
@@ -678,21 +686,53 @@ xp.dom = function() {
 		 * @param {Object} style css
 		 */
 		css : function(el, name, val) {
+			/*
 			var el = this.id(el), name = this._camelCssName(name);
 			if (el) {
 				return xp.css.css(el, name, val);
 			}
 			return null;
+			*/
+			if(!val){
+				return this.getStyle(el, name);
+			}else{
+				this.setStyle(el, name, val);
+				return val;
+			}
 		},
 		/**
 		 * 设置元素的样式
+		 * @name set_style
 		 * @param {Element} el 元素
 		 * @param {String} styleName css 属性名称
 		 * @param {String} value css 属性值
 		 * @return {String} 返回元素样式
 		 */
 		setStyle : function(el, styleName, value) {
-			return this.css(el, styleName, value);
+			//return this.css(el, styleName, value);
+			if(!el || !styleName){
+	            return;
+	        }
+	        var el = this.id(el),
+	       		ie = xp.ie,
+	       		styleName = this._camelCssName(styleName);
+	        if(styleName === "float" || styleName === "cssFloat"){
+	            if(ie){
+	                styleName = "styleFloat";
+	            }else{
+	                styleName = "cssFloat";
+	            }
+	        }
+	        
+	        if(styleName === "opacity" && ie && ie < 9 ){
+	            var opacity = value*100;
+	            el.style.filter = 'alpha(opacity="' + opacity + '")';	
+	            if(!el.style.zoom){
+	                el.style.zoom = 1;
+	            }
+	            return;
+	        }
+	        el.style[styleName] = value;
 		},
 		/**
 		 * 获取元素的当前实际样式
@@ -701,7 +741,42 @@ xp.dom = function() {
 		 * @return {String} 返回元素样式
 		 */
 		getStyle : function(el, styleName) {
-			return this.css(el, styleName);
+			//return this.css(el, styleName);
+			if(!el){
+	            return;
+	        }
+	        var el = this.id(el),
+	        	win = this.getWin(el),
+	       		ie = xp.ie,
+	       		styleName = this._camelCssName(styleName);
+	        if(styleName === "float" || styleName === "cssFloat"){
+	            if(ie){
+	                styleName = "styleFloat";
+	            }else{
+	                styleName = "cssFloat";
+	            }
+	        }
+	        if(styleName === "opacity" && ie && ie < 9 ){
+	            var opacity = 1,
+	                result = el.style.filter.match(/opacity=(\d+)/);
+	            if(result && result[1]){
+	                opacity = result[1]/100;
+	            }
+	            return opacity;
+	        }
+	        
+	        if(el.style[styleName]){
+	            return el.style[styleName];
+	        }else if(el.currentStyle){
+	            return el.currentStyle[styleName];
+	        }else if(win.getComputedStyle){
+	            return win.getComputedStyle(el, null)[styleName];
+	        }else if(document.defaultView && document.defaultView.getComputedStyle){
+	            styleName = styleName.replace(/([/A-Z])/g, "-$1");
+	            styleName = styleName.toLowerCase();
+	            var style = document.defaultView.getComputedStyle(el, "");
+	            return style && style.getPropertyValue(styleName);
+	        }
 		},
 		/**
 		 * 判断样式名是否存在
@@ -710,45 +785,62 @@ xp.dom = function() {
 		 * @return {Boolean}
 		 */
 		hasCls : function(element, cls) {
+			element = xp.dom.id(element);
 			return element.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
 		},
 		/**
 		 * 设置样式名
+		 * @setter set-cls
 		 * @param {Element} element Dom元素
 		 * @param {String} cls 样式名称
 		 * @return {Boolean}
 		 */
 		setCls : function(element, cls) {
+			element = xp.dom.id(element);
 			element.className = cls;
 		},
 		/**
-		 *setCls的简写
-		 *
+		 * 设置样式名
+		 * @param {String} element Dom元素的ID
+		 * @param {String} cls 样式名称
+		 * @return {Boolean}
 		 */
-		cls : this.setCls,
+		cls : function(element, cls) {
+			el = this.id(element);
+			if(el){
+				el.className = cls;
+			}
+			
+		},
 		/**
 		 * 增加样式名
+		 * @setter add-cls
 		 * @param {Element} element Dom元素
 		 * @param {String} cls 样式名称
 		 */
 		addCls : function(element, cls) {
+			element = this.id(element);
 			!this.hasCls(element, cls) && (element.className = (element.className + " " + cls).trim());
 		},
 		/**
 		 * 删除样式名
+		 * @setter rm-cls
 		 * @param {Element} element Dom元素
 		 * @param {String} cls 样式名称
 		 */
 		rmCls : function(element, cls) {
+			element = this.id(element);
 			this.hasCls(element, cls) && (element.className = element.className.replace(new RegExp('(\\s|^)' + cls + '(\\s|$)'), ""))
 		},
 		/**
 		 * 替换样式名
+		 * @setter replace-cls
 		 * @param {Element} element Dom元素
 		 * @param {String} oldClassName 被替换的样式名称
 		 * @param {String} newClassName 替换的样式名称
 		 */
 		replaceCls : function(element, oldClassName, newClassName) {
+			element = this.id(element);
 			this.rmCls(element, oldClassName);
 			this.addCls(element, newClassName);
 		},
@@ -866,7 +958,7 @@ xp.dom = function() {
 		scrollLeft : function(el) {
 			var scrollLeft;
 			if (el) {
-				scrollLeft = xp.css.scrollLeft(el);
+				scrollLeft = el.scrollLeft;
 			} else {
 				scrollLeft = Math.max(document.documentElement.scrollLeft, document.body.scrollLeft);
 			}
@@ -875,8 +967,8 @@ xp.dom = function() {
 		scrollTop : function(el) {
 			var scrollTop;
 			if (el) {
-				//scrollTop = el.scrollTop;
-				scrollTop = xp.css.scrollTop(el);
+				scrollTop = el.scrollTop;
+				//scrollTop = xp.css.scrollTop(el);
 			} else {
 				scrollTop = Math.max(document.documentElement.scrollTop, document.body.scrollTop);
 			}
@@ -971,10 +1063,19 @@ xp.dom = function() {
 			return xy;
 		},
 		parseCssPx : function(value) {
+			if(xp.isNumber(value)){
+				return value;
+			}
 			if (!value || value == 'auto')
 				return 0;
-			else
-				return parseInt(value.substr(0, value.length - 2));
+			else{
+				if(value.toString().indexOf("px") > -1){
+					return parseInt(value.substr(0, value.length - 2));
+				}else{
+					return value;
+				}	
+			}
+				
 		},
 		/**
 		 * 获取x坐标的简便方法
@@ -999,8 +1100,17 @@ xp.dom = function() {
 		 * @return {String}
 		 *
 		 */
-		width : function(el) {
-			return this.parseCssPx(this.getStyle(el, 'width'));
+		width : function(el,val) {
+			var me = xp.dom;
+			if(val){
+				var v = me.parseCssPx(val);
+				me.setStyle(el,"width",v + "px");
+				return v;
+			}else{
+				return me.parseCssPx(me.getStyle(el,"width"));
+			}
+			
+			//return this.parseCssPx(this.getStyle(el, 'width'));
 		},
 		/**
 		 * 获取高度的简便方法
@@ -1008,8 +1118,16 @@ xp.dom = function() {
 		 * @return {String}
 		 *
 		 */
-		height : function(el) {
-			return this.parseCssPx(this.getStyle(el, 'height'));
+		height : function(el,val) {
+			var me = xp.dom;
+			if(val){
+				var v = me.parseCssPx(val);
+				me.setStyle(el,"height",v + "px");
+				return v;
+			}else{
+				return me.parseCssPx(me.getStyle(el,"height"));
+			}
+			//return this.parseCssPx(this.getStyle(el, 'height'));
 		},
 		/**
 		 * 获取选择的文本
@@ -1041,6 +1159,27 @@ xp.dom = function() {
 				result = el.href;
 			}
 			return result || null;
+		},
+		/**
+		 * 外部调用
+		 * @param {Object} options 参数 
+		 */
+		init : function(options){
+			var id = options.id;
+			if(id && id.nodeType){
+				delete options.id;			
+				for(var p in options){	
+					if(this[p]){
+						if(~options[p].indexOf(",")){
+							this[p].apply(this,options[p].split(","));
+						}else{
+							this[p](options[p]);
+						}
+					}
+					
+				}
+				
+			}
 		}
 	};
 }();
